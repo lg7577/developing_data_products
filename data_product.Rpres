@@ -1,0 +1,66 @@
+Developing Data Products: Titanic data set
+========================================================
+author: Lior Ginzberg
+date: `r date()`
+
+Introduction
+========================================================
+
+  Would you survive the Titanic tragedy?  
+
+  We would never know but using the Titanic data set, with real data, we can make
+  some educated guesses
+  
+  Let's continue and see what I have done in the Shiny application 
+  I developed...
+
+Initial Steps (Ingesting and reviewing the data)
+========================================================
+
+I started by downloading the data from http://vincentarelbundock.github.io/Rdatasets/datasets.html to my hard disk.
+
+I countinued by loading the data to R, summarizing it and reviewing the first few
+record as you can see below
+
+```{r}
+Titan_Stat <- read.csv("Titanic.csv", header = TRUE, sep =",")
+summary(Titan_Stat)
+head(Titan_Stat)
+```
+
+Main Function 
+========================================================
+
+I then developed UI and Server routines (http://lg7577.shinyapps.io/data_product) for the shiny application to do the following:
+- Allow the end user to choose the class he would travel in if he was on the Titanic, his age and gender 
+- I wrote a fucntion in the Server routine to calculate the probability to survive or not to survive according to the above criteria.
+- Added a button that showed the end user the real Titanic survival data from the table with the calculated probability. Each press of the button would present two records (Survived and Not Survived Statistics) according to the chosen criteria
+- Generated three plots to show a breakdown of the Titanic data base on Class, Age and Sex.  
+
+Graphs (Survival rate by Age)
+========================================================
+```{r}
+library(ggplot2)
+plot1 <- ggplot(data = Titan_Stat, aes(x = Age, y = Freq))
+plot1 +   facet_grid(. ~ Survived) +
+           geom_point() +
+           stat_summary(fun.y=sum, geom="bar")
+```
+
+Graphs (Survival rate by Sex)
+========================================================
+```{r}  
+plot2 <- ggplot(data = Titan_Stat, aes(x = Sex, y = Freq)) 
+plot2 +    facet_grid(. ~ Survived) +
+           geom_point() +
+           stat_summary(fun.y=sum, geom="bar")
+```
+
+Graphs (Survival rate by Class)
+========================================================
+```{r}
+plot3 <- ggplot(data = Titan_Stat, aes(x = Class, y = Freq)) 
+plot3 +    facet_grid(. ~ Survived) +
+           geom_point() +
+           stat_summary(fun.y=sum, geom="bar")
+```
